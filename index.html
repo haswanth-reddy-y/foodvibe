@@ -1,9 +1,13 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Desi Delights | Sri Vasavi Engineering College</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database-compat.js"></script>
+
     <style>
         :root {
             --saffron: #FF9933;
@@ -15,27 +19,28 @@
             --dark: #3e2723;
         }
 
-        body { font-family: 'Poppins', Arial, sans-serif; margin: 0; background-color: var(--cream); color: var(--dark); }
+        body { font-family: 'Poppins', Arial, sans-serif; margin: 0; background-color: var(--cream); color: var(--dark); overflow-x: hidden; }
         header { background: linear-gradient(135deg, var(--saffron), var(--chili-red)); color: white; padding: 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
         .container { max-width: 1000px; margin: auto; padding: 20px; }
  
-     
+        /* Role & Login Cards */
         #role-selection-screen, .login-card { max-width: 450px; margin: 50px auto; background: var(--white); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
         #role-selection-screen { border-top: 6px solid var(--turmeric); }
         .buyer-card { border-top: 6px solid var(--cilantro); }
         .owner-card { border-top: 6px solid var(--chili-red); }
 
         input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; margin: 10px 0; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; margin: 5px 0; }
         .btn-buyer { background: var(--cilantro); color: white; }
         .btn-owner { background: var(--saffron); color: white; }
         .btn-back { background: #eee; color: #555; font-size: 0.8rem; }
      
+        /* Dashboard & Menu */
         .admin-section { background: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
         .food-card { background: var(--white); border-radius: 15px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-left: 5px solid var(--turmeric); }
-        
+        .price-tag { color: var(--chili-red); font-size: 1.2rem; font-weight: bold; }
+
         #cart-section { position: fixed; bottom: 20px; right: 20px; width: 320px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 -5px 25px rgba(0,0,0,0.2); border-top: 4px solid var(--cilantro); z-index: 100; }
         .hidden { display: none !important; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
@@ -43,6 +48,8 @@
 
         .search-bar { width: 100%; padding: 15px; margin-bottom: 20px; border-radius: 30px; border: 2px solid var(--turmeric); font-size: 1rem; }
         .order-alert { background: #e8f5e9; padding: 10px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid var(--cilantro); animation: slideIn 0.5s ease; }
+        
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
     </style>
 </head>
 <body>
@@ -78,15 +85,15 @@
 
     <div id="owner-dashboard" class="hidden">
         <div class="admin-section">
-            <h3>🔔 Recent Incoming Orders</h3>
-            <div id="incoming-orders-list"><p style="color: #999;">Checking for new orders...</p></div>
+            <h3>🔔 Incoming Orders (Cloud)</h3>
+            <div id="incoming-orders-list">Waiting for orders...</div>
         </div>
         <div class="admin-section">
             <h3>Add New Food Item</h3>
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <input type="text" id="new-food-name" placeholder="Item Name" style="flex: 2;">
                 <input type="number" id="new-food-price" placeholder="Price (₹)" style="flex: 1;">
-                <button class="btn btn-buyer" style="width: auto;" onclick="addNewItem()">Add</button>
+                <button class="btn btn-buyer" style="width: auto;" onclick="addNewItem()">Add Item</button>
             </div>
         </div>
         <div class="admin-section">
@@ -95,12 +102,12 @@
                 <thead><tr><th>Food Item</th><th>Price (₹)</th><th>Action</th></tr></thead>
                 <tbody id="admin-table-body"></tbody>
             </table>
-            <button class="btn btn-back" style="margin-top:20px" onclick="logout()">Logout</button>
+            <button class="btn btn-back" style="margin-top:20px" onclick="logout()">Logout / Shift Role</button>
         </div>
     </div>
 
     <div id="buyer-menu" class="hidden">
-        <input type="text" class="search-bar" id="search-input" placeholder="🔍 Search for Biryani, Dosa..." onkeyup="filterMenu()">
+        <input type="text" class="search-bar" id="search-input" placeholder="🔍 Search menu (Biryani, Dosa...)" onkeyup="filterMenu()">
         <div class="menu-grid" id="food-list"></div>
     </div>
 </div>
@@ -108,22 +115,32 @@
 <div id="cart-section" class="hidden">
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <h3 style="margin:0;">Your Bill</h3>
-        <button onclick="clearCart()" style="border:none; background:none; color:red; cursor:pointer; font-size:0.8rem;">Clear</button>
+        <button onclick="clearCart()" style="border:none; background:none; color:red; cursor:pointer; font-size:0.8rem;">Clear All</button>
     </div>
     <div id="cart-items" style="max-height: 150px; overflow-y: auto; margin: 10px 0;"></div>
     <hr>
     <div style="font-size: 1.1rem; font-weight: bold; color: var(--chili-red);">Total: ₹<span id="final-total">0</span></div>
-    <button class="btn" style="background: #25D366; color: white;" onclick="finalizeOrder()">Place Order & WhatsApp</button>
+    <button class="btn" style="background: #25D366; color: white; margin-top: 10px;" onclick="finalizeOrder()">Place Order & Get Bill</button>
     <button class="btn btn-back" onclick="logout()">Logout</button>
 </div>
 
 <script>
-    let menu = [
-        { id: 1, name: "Paneer Butter Masala", price: 180 },
-        { id: 2, name: "Chicken Biryani", price: 250 },
-        { id: 3, name: "Special Fried Rice", price: 150 }
-    ];
+ 
+    const firebaseConfig = {
+  apiKey: "AIzaSyB_FgpjqGI2OHp8u6KBwlBUamyqHS7yvDo",
+  authDomain: "desi-delights-de69a.firebaseapp.com",
+  databaseURL: "https://desi-delights-de69a-default-rtdb.firebaseio.com",
+  projectId: "desi-delights-de69a",
+  storageBucket: "desi-delights-de69a.firebasestorage.app",
+  messagingSenderId: "565398829820",
+  appId: "1:565398829820:web:2fd7226cefc1268c21b579",
+  measurementId: "G-03KZB30720"
+};
+ 
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
+    let menu = [];
     let cart = [];
     let currentUser = {};
     const OWNER_PHONE = "6304438653"; 
@@ -139,6 +156,34 @@
         }
         if (Notification.permission !== "granted") Notification.requestPermission();
     };
+
+    
+    db.ref('menu/').on('value', (snapshot) => {
+        const data = snapshot.val();
+        menu = [];
+        for (let key in data) {
+            menu.push({ id: key, ...data[key] });
+        }
+        renderMenu(menu);
+        if (currentUser.role === 'owner') renderAdminTable();
+    });
+ 
+    db.ref('orders/').on('value', (snapshot) => {
+        const data = snapshot.val();
+        const list = document.getElementById('incoming-orders-list');
+        if (!data) return;
+        
+        let html = "";
+        let entries = Object.values(data).reverse().slice(0, 5);
+        entries.forEach(o => {
+            html += `<div class="order-alert"><strong>${o.name}</strong> ordered worth <strong>₹${o.total}</strong> at ${o.time}</div>`;
+        });
+        list.innerHTML = html;
+         
+        if(currentUser.role === 'owner' && entries.length > 0) {
+            new Notification("New Order Received!", { body: `${entries[0].name}: ₹${entries[0].total}` });
+        }
+    });
  
     function showLogin(role) {
         document.getElementById('role-selection-screen').classList.add('hidden');
@@ -154,7 +199,7 @@
         if(role === 'buyer') {
             const name = document.getElementById('buyer-name').value;
             const phone = document.getElementById('buyer-phone').value;
-            if(!name || !phone) return alert("Enter details!");
+            if(!name || !phone) return alert("Please enter Name and Phone!");
             
             localStorage.setItem('savedName', name);
             localStorage.setItem('savedPhone', phone);
@@ -163,7 +208,6 @@
             document.getElementById('buyer-login').classList.add('hidden');
             document.getElementById('buyer-menu').classList.remove('hidden');
             document.getElementById('cart-section').classList.remove('hidden');
-            renderMenu(menu);
         } else {
             const phone = document.getElementById('owner-id-phone').value;
             const pass = document.getElementById('owner-pass').value;
@@ -171,35 +215,54 @@
                 currentUser = { name: "Owner", phone, role: 'owner' };
                 document.getElementById('owner-login').classList.add('hidden');
                 document.getElementById('owner-dashboard').classList.remove('hidden');
-                renderAdminTable();
-                loadStoredOrders();
             } else {
-                alert("Invalid Owner Access!");
+                alert("Incorrect Owner Credentials!");
             }
         }
     }
  
-    function notifyOwnerOfOrder(buyerName, totalAmount) {
-        if (Notification.permission === "granted") {
-            new Notification("New Order!", { body: `${buyerName} ordered for ₹${totalAmount}` });
+    function addNewItem() {
+        const name = document.getElementById('new-food-name').value;
+        const price = parseFloat(document.getElementById('new-food-price').value);
+        if(name && price) {
+            db.ref('menu/').push({ name, price });
+            document.getElementById('new-food-name').value = '';
+            document.getElementById('new-food-price').value = '';
         }
-        let orders = JSON.parse(localStorage.getItem('desiOrders') || '[]');
-        orders.unshift({ name: buyerName, amount: totalAmount, time: new Date().toLocaleTimeString() });
-        localStorage.setItem('desiOrders', JSON.stringify(orders));
     }
 
-    function loadStoredOrders() {
-        const list = document.getElementById('incoming-orders-list');
-        let orders = JSON.parse(localStorage.getItem('desiOrders') || '[]');
-        list.innerHTML = orders.length ? orders.slice(0, 5).map(o => `<div class="order-alert"><strong>${o.name}</strong>: ₹${o.amount} (${o.time})</div>`).join('') : "No orders.";
+    function deleteItem(id) {
+        if(confirm("Delete this item from Cloud?")) {
+            db.ref('menu/' + id).remove();
+        }
+    }
+
+    function renderAdminTable() {
+        const tbody = document.getElementById('admin-table-body');
+        if(!tbody) return;
+        tbody.innerHTML = menu.map((item) => `
+            <tr>
+                <td>${item.name}</td>
+                <td>₹${item.price}</td>
+                <td><button onclick="deleteItem('${item.id}')" class="btn-danger">Del</button></td>
+            </tr>
+        `).join('');
     }
  
+    function filterMenu() {
+        const q = document.getElementById('search-input').value.toLowerCase();
+        const filtered = menu.filter(m => m.name.toLowerCase().includes(q));
+        renderMenu(filtered);
+    }
+
     function renderMenu(data) {
-        document.getElementById('food-list').innerHTML = data.map(item => `
+        const list = document.getElementById('food-list');
+        if(!list) return;
+        list.innerHTML = data.map(item => `
             <div class="food-card">
                 <h3>${item.name}</h3>
                 <p class="price-tag">₹${item.price}</p>
-                <button class="btn btn-buyer" onclick="addToCart(${item.id})">Add to Cart</button>
+                <button class="btn btn-buyer" onclick="addToCart('${item.id}')">Add to Cart</button>
             </div>
         `).join('');
     }
@@ -212,37 +275,38 @@
 
     function updateCartUI() {
         let total = 0;
-        document.getElementById('cart-items').innerHTML = cart.map((item, idx) => {
+        const cartDiv = document.getElementById('cart-items');
+        cartDiv.innerHTML = cart.map((item, idx) => {
             total += item.price;
-            return `<div style="display:flex; justify-content:space-between; font-size:0.8rem;">
-                <span>${item.name}</span><span>₹${item.price} <button onclick="removeFromCart(${idx})" style="color:red;border:none;background:none;">x</button></span>
+            return `<div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.85rem;">
+                <span>${item.name}</span>
+                <span>₹${item.price} <button onclick="removeFromCart(${idx})" style="color:red; border:none; background:none; cursor:pointer;">x</button></span>
             </div>`;
         }).join('');
         document.getElementById('final-total').innerText = total;
     }
 
     function finalizeOrder() {
+        if(cart.length === 0) return alert("Cart is empty!");
         const total = document.getElementById('final-total').innerText;
-        notifyOwnerOfOrder(currentUser.name, total);
-        window.open(`https://wa.me/91${currentUser.phone}?text=New Order: ₹${total}`, '_blank');
-    }
+        
+      
+        
+        db.ref('orders/').push({
+            name: currentUser.name,
+            total: total,
+            time: new Date().toLocaleTimeString()
+        });
  
-    function addNewItem() {
-        const name = document.getElementById('new-food-name').value;
-        const price = parseFloat(document.getElementById('new-food-price').value);
-        if(name && price) { menu.push({id: Date.now(), name, price}); renderAdminTable(); }
+        let billMsg = `*DESI DELIGHTS ORDER*\nCustomer: ${currentUser.name}\nTotal: ₹${total}\nThank you!`;
+        window.open(`https://wa.me/91${currentUser.phone}?text=${encodeURIComponent(billMsg)}`, '_blank');
+        
+        clearCart();
     }
 
-    function renderAdminTable() {
-        document.getElementById('admin-table-body').innerHTML = menu.map((item, idx) => `
-            <tr><td>${item.name}</td><td>₹${item.price}</td><td><button onclick="deleteItem(${idx})" class="btn-danger">Del</button></td></tr>
-        `).join('');
-    }
-
-    function deleteItem(idx) { menu.splice(idx, 1); renderAdminTable(); }
-    function logout() { location.reload(); }
     function removeFromCart(idx) { cart.splice(idx, 1); updateCartUI(); }
     function clearCart() { cart = []; updateCartUI(); }
+    function logout() { location.reload(); }
 </script>
 </body>
 </html>
