@@ -1,0 +1,283 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desi Delights | Sri Vasavi Engineering College</title>
+    <style>
+        :root {
+            --saffron: #FF9933;
+            --chili-red: #d32f2f;
+            --turmeric: #ffc107;
+            --cilantro: #2e7d32;
+            --cream: #fff9f0;
+            --white: #ffffff;
+            --dark: #3e2723;
+        }
+
+        body { font-family: 'Poppins', Arial, sans-serif; margin: 0; background-color: var(--cream); color: var(--dark); }
+        header { background: linear-gradient(135deg, var(--saffron), var(--chili-red)); color: white; padding: 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .container { max-width: 1000px; margin: auto; padding: 20px; }
+ 
+        /* Login Section Enhancement */
+        #login-section { max-width: 450px; margin: 50px auto; background: var(--white); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 6px solid var(--saffron); text-align: center; }
+        .role-selection { display: flex; gap: 10px; margin-top: 15px; }
+        
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
+        .btn-owner { background: var(--saffron); color: white; flex: 1; }
+        .btn-buyer { background: var(--cilantro); color: white; flex: 1; }
+        .btn-primary { background: var(--cilantro); color: white; margin-top: 10px; }
+        .btn-danger { background: var(--chili-red); color: white; padding: 5px 10px; font-size: 0.7rem; border-radius: 5px; cursor: pointer; border: none; }
+        
+        /* Dashboard & Menu */
+        .admin-section { background: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .food-card { background: var(--white); border-radius: 15px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-left: 5px solid var(--turmeric); }
+        
+        #cart-section { position: fixed; bottom: 20px; right: 20px; width: 320px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 -5px 25px rgba(0,0,0,0.2); border-top: 4px solid var(--cilantro); z-index: 100; }
+        .hidden { display: none !important; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+
+        .search-bar { width: 100%; padding: 15px; margin-bottom: 20px; border-radius: 30px; border: 2px solid var(--turmeric); font-size: 1rem; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Desi Delights</h1>
+    <p>Sri Vasavi Engineering College Canteen</p>
+</header>
+
+<div class="container">
+    <div id="login-section">
+        <h3>Welcome! Please Login</h3>
+        <input type="text" id="login-name" placeholder="Full Name">
+        <input type="tel" id="login-phone" placeholder="WhatsApp Number">
+        
+        <div id="owner-pass-div" class="hidden">
+            <input type="password" id="owner-pass" placeholder="Enter Owner Password">
+        </div>
+
+        <div class="role-selection">
+            <button class="btn btn-buyer" onclick="handleRole('buyer')">Login as Buyer</button>
+            <button class="btn btn-owner" onclick="handleRole('owner')">Login as Owner</button>
+        </div>
+        <p id="login-msg" style="font-size: 0.8rem; margin-top: 10px; color: #666;">Select your role to continue</p>
+    </div>
+
+    <div id="owner-dashboard" class="hidden">
+        <div class="admin-section">
+            <h3>Add New Food Item</h3>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <input type="text" id="new-food-name" placeholder="Item Name" style="flex: 2;">
+                <input type="number" id="new-food-price" placeholder="Price (₹)" style="flex: 1;">
+                <button class="btn btn-primary" style="width: auto;" onclick="addNewItem()">Add Item</button>
+            </div>
+        </div>
+
+        <div class="admin-section">
+            <h3>Parcel Settings</h3>
+            <div style="background: #fff3e0; padding: 15px; border-radius: 8px; display: flex; align-items: center; gap: 15px;">
+                <label><strong>Parcel Charge (₹):</strong></label>
+                <input type="number" id="global-parcel-input" value="10" style="width: 80px; margin: 0;">
+                <button class="btn btn-owner" style="width: auto; padding: 10px 20px;" onclick="updateParcelCharge()">Save Charge</button>
+            </div>
+        </div>
+        
+        <div class="admin-section">
+            <h3>Current Inventory</h3>
+            <table>
+                <thead><tr><th>Food Item</th><th>Price (₹)</th><th>Action</th></tr></thead>
+                <tbody id="admin-table-body"></tbody>
+            </table>
+            <button class="btn" style="margin-top:20px; background: #555; color: white;" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div id="buyer-menu" class="hidden">
+        <input type="text" class="search-bar" id="search-input" placeholder="🔍 Search for Biryani, Dosa, or Snacks..." onkeyup="filterMenu()">
+        
+        <div style="background: var(--turmeric); padding: 10px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+            <strong>Notice:</strong> Parcel charge: <span id="display-parcel-fee">₹10</span> per pack.
+        </div>
+        <div class="menu-grid" id="food-list"></div>
+    </div>
+</div>
+
+<div id="cart-section" class="hidden">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="margin:0;">Your Bill</h3>
+        <button onclick="clearCart()" style="border:none; background:none; color:red; cursor:pointer; font-size: 0.8rem;">Clear All</button>
+    </div>
+    <div id="cart-items" style="max-height: 150px; overflow-y: auto; margin: 10px 0;"></div>
+    <hr>
+    <div style="font-size: 0.9rem; line-height: 1.6;">
+        <div>Items: ₹<span id="subtotal">0</span></div>
+        <div>Parcel: ₹<span id="total-parcel">0</span></div>
+        <div style="font-size: 1.2rem; font-weight: bold; color: var(--chili-red);">Total: ₹<span id="final-total">0</span></div>
+    </div>
+    <button class="btn" style="background: #25D366; color: white; margin-top: 10px;" onclick="sendToWhatsApp()">Order via WhatsApp</button>
+</div>
+
+<script>
+    let menu = [
+        { id: 1, name: "Paneer Butter Masala", price: 180 },
+        { id: 2, name: "Chicken Biryani", price: 250 },
+        { id: 3, name: "Special Fried Rice", price: 150 },
+        { id: 4, name: "Masala Dosa", price: 60 }
+    ];
+
+    let parcelCharge = 10;
+    let cart = [];
+    let currentUser = {};
+    const OWNER_PHONE = "6304438653"; 
+    const OWNER_PASS = "havi2196";
+
+    // 1. Separate Login Logic
+    function handleRole(role) {
+        const name = document.getElementById('login-name').value;
+        const phone = document.getElementById('login-phone').value;
+        const passDiv = document.getElementById('owner-pass-div');
+
+        if(!name || !phone) return alert("Please enter Name and Phone first!");
+
+        if(role === 'owner') {
+            if(passDiv.classList.contains('hidden')) {
+                passDiv.classList.remove('hidden');
+                document.getElementById('login-msg').innerText = "Enter password and click 'Login as Owner' again";
+                return;
+            }
+            const pass = document.getElementById('owner-pass').value;
+            if(phone === OWNER_PHONE && pass === OWNER_PASS) {
+                currentUser = { name, phone, role: 'owner' };
+                showOwnerView();
+            } else {
+                alert("Incorrect Owner Credentials!");
+            }
+        } else {
+            currentUser = { name, phone, role: 'buyer' };
+            showBuyerView();
+        }
+    }
+
+    function showOwnerView() {
+        document.getElementById('login-section').classList.add('hidden');
+        document.getElementById('owner-dashboard').classList.remove('hidden');
+        renderAdminTable();
+    }
+
+    function showBuyerView() {
+        document.getElementById('login-section').classList.add('hidden');
+        document.getElementById('buyer-menu').classList.remove('hidden');
+        document.getElementById('cart-section').classList.remove('hidden');
+        document.getElementById('display-parcel-fee').innerText = `₹${parcelCharge}`;
+        renderMenu(menu);
+    }
+
+    // 2. Owner Functions
+    function addNewItem() {
+        const name = document.getElementById('new-food-name').value;
+        const price = parseFloat(document.getElementById('new-food-price').value);
+        if(name && price) {
+            menu.push({ id: Date.now(), name, price });
+            document.getElementById('new-food-name').value = '';
+            document.getElementById('new-food-price').value = '';
+            renderAdminTable();
+        }
+    }
+
+    function updateParcelCharge() {
+        parcelCharge = parseFloat(document.getElementById('global-parcel-input').value) || 0;
+        alert("Parcel Charge Updated!");
+    }
+
+    function renderAdminTable() {
+        const tbody = document.getElementById('admin-table-body');
+        tbody.innerHTML = menu.map((item, index) => `
+            <tr>
+                <td>${item.name}</td>
+                <td><input type="number" value="${item.price}" id="p-${index}" style="width:60px; margin:0;"></td>
+                <td>
+                    <button onclick="savePrice(${index})" class="btn-owner" style="padding:5px 10px; width:auto; font-size:0.7rem;">Save</button>
+                    <button onclick="deleteItem(${index})" class="btn-danger">Del</button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function savePrice(index) {
+        menu[index].price = parseFloat(document.getElementById(`p-${index}`).value);
+        alert("Price saved!");
+    }
+
+    function deleteItem(index) {
+        menu.splice(index, 1);
+        renderAdminTable();
+    }
+
+    // 3. Buyer & Search Functions
+    function filterMenu() {
+        const query = document.getElementById('search-input').value.toLowerCase();
+        const filtered = menu.filter(item => item.name.toLowerCase().includes(query));
+        renderMenu(filtered);
+    }
+
+    function renderMenu(data) {
+        const list = document.getElementById('food-list');
+        list.innerHTML = data.map(item => `
+            <div class="food-card">
+                <h3 style="margin:0;">${item.name}</h3>
+                <p style="color:var(--chili-red); font-weight:bold; font-size:1.2rem; margin:10px 0;">₹${item.price}</p>
+                <p style="font-size:0.8rem; color:#666;">+ ₹${parcelCharge} Parcel</p>
+                <button class="btn btn-primary" onclick="addToCart(${item.id})">Add to Pack</button>
+            </div>
+        `).join('');
+    }
+
+    function addToCart(id) {
+        const item = menu.find(m => m.id === id);
+        cart.push({...item, pCharge: parcelCharge});
+        updateCartUI();
+    }
+
+    function updateCartUI() {
+        const itemsDiv = document.getElementById('cart-items');
+        let subTotal = 0, parcelTotal = 0;
+        itemsDiv.innerHTML = cart.map((item, idx) => {
+            subTotal += item.price;
+            parcelTotal += item.pCharge;
+            return `<div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:5px;">
+                <span>${item.name}</span>
+                <span>₹${item.price} <button onclick="removeFromCart(${idx})" style="color:red; border:none; background:none; cursor:pointer;">x</button></span>
+            </div>`;
+        }).join('');
+        document.getElementById('subtotal').innerText = subTotal;
+        document.getElementById('total-parcel').innerText = parcelTotal;
+        document.getElementById('final-total').innerText = subTotal + parcelTotal;
+    }
+
+    function removeFromCart(index) {
+        cart.splice(index, 1);
+        updateCartUI();
+    }
+
+    function clearCart() { cart = []; updateCartUI(); }
+
+    function sendToWhatsApp() {
+        if(cart.length === 0) return alert("Cart is empty!");
+        let bill = `*DESI DELIGHTS - ORDER BILL*\n--------------------------\n`;
+        bill += `Customer: ${currentUser.name}\n`;
+        cart.forEach(item => bill += `• ${item.name}: ₹${item.price}\n`);
+        bill += `--------------------------\n`;
+        bill += `Parcel Charges: ₹${document.getElementById('total-parcel').innerText}\n`;
+        bill += `*Total Amount: ₹${document.getElementById('final-total').innerText}*\n`;
+        window.open(`https://wa.me/91${currentUser.phone}?text=${encodeURIComponent(bill)}`, '_blank');
+    }
+
+    function logout() { location.reload(); }
+</script>
+</body>
+</html>
