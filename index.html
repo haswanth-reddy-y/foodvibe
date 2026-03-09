@@ -14,16 +14,53 @@
             --chili-red: #d32f2f;
             --turmeric: #ffc107;
             --cilantro: #2e7d32;
+            --leaf-green: #4caf50;
             --cream: #fff9f0;
             --white: #ffffff;
             --dark: #3e2723;
         }
 
-        body { font-family: 'Poppins', Arial, sans-serif; margin: 0; background-color: var(--cream); color: var(--dark); overflow-x: hidden; }
-        header { background: linear-gradient(135deg, var(--saffron), var(--chili-red)); color: white; padding: 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        .container { max-width: 1000px; margin: auto; padding: 20px; }
+        body { 
+            font-family: 'Poppins', Arial, sans-serif; 
+            margin: 0; 
+            background-color: var(--cream); 
+            color: var(--dark); 
+            overflow-x: hidden;
+   
+            background-image: radial-gradient(var(--turmeric) 0.5px, transparent 0.5px);
+            background-size: 30px 30px;
+            background-opacity: 0.1;
+        }
 
-       
+        header { 
+            background: linear-gradient(135deg, var(--saffron), var(--chili-red)); 
+            color: white; 
+            padding: 20px; 
+            text-align: center; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+            position: relative;
+            z-index: 10;
+        }
+
+        .container { max-width: 1000px; margin: auto; padding: 20px; position: relative; }
+ 
+        #role-selection-screen {
+            position: relative;
+            overflow: hidden;
+            border: 2px solid var(--leaf-green);
+            background: linear-gradient(to bottom, #ffffff 60%, #e8f5e9 100%);
+        }
+ 
+        #role-selection-screen::before {
+            content: "🍃";
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 5rem;
+            opacity: 0.1;
+            transform: rotate(20deg);
+        }
+
         .food-showcase {
             display: flex;
             justify-content: center;
@@ -39,32 +76,40 @@
             object-fit: cover;
             border: 4px solid var(--white);
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
         }
 
-         
         .food-item-img:hover {
             transform: scale(1.15) rotate(5deg);
-            border-color: var(--turmeric);
+            border-color: var(--leaf-green);
         }
 
         .hero-text {
             font-size: 1.2rem;
             font-weight: bold;
-            color: var(--saffron);
+            color: var(--leaf-green);
             margin-bottom: 10px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        #role-selection-screen, .login-card { max-width: 450px; margin: 20px auto; background: var(--white); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
-        #role-selection-screen { border-top: 6px solid var(--turmeric); }
+        #role-selection-screen, .login-card { 
+            max-width: 450px; 
+            margin: 50px auto; 
+            background: var(--white); 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            text-align: center; 
+        }
+
+        #role-selection-screen { border-top: 8px solid var(--leaf-green); }
         .buyer-card { border-top: 6px solid var(--cilantro); }
         .owner-card { border-top: 6px solid var(--chili-red); }
 
         input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-         
+       
         .btn { 
             width: 100%; 
             padding: 12px; 
@@ -74,17 +119,18 @@
             cursor: pointer; 
             text-transform: uppercase; 
             margin: 5px 0; 
-            
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         .btn:hover {
-            transform: scale(1.05);  
-            box-shadow: 0 8px 15px rgba(0,0,0,0.2);  
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            filter: brightness(1.1);
         }
 
         .btn:active {
-            transform: scale(0.98);  
+            transform: translateY(1px) scale(0.98);
         }
 
         .btn-buyer { background: var(--cilantro); color: white; }
@@ -93,38 +139,52 @@
      
         .admin-section { background: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .food-card { background: var(--white); border-radius: 15px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-left: 5px solid var(--turmeric); }
-        .price-tag { color: var(--chili-red); font-size: 1.2rem; font-weight: bold; }
+        
+        .food-card { 
+            background: var(--white); 
+            border-radius: 15px; 
+            padding: 20px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+            border-left: 8px solid var(--leaf-green); 
+            transition: 0.3s;
+        }
+
+        .food-card:hover { transform: scale(1.02); }
 
         #cart-section { position: fixed; bottom: 20px; right: 20px; width: 320px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 -5px 25px rgba(0,0,0,0.2); border-top: 4px solid var(--cilantro); z-index: 100; }
         .hidden { display: none !important; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
 
-        .search-bar { width: 100%; padding: 15px; margin-bottom: 20px; border-radius: 30px; border: 2px solid var(--turmeric); font-size: 1rem; }
-        .order-alert { background: #fff; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 5px solid var(--cilantro); box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: left; }
+        .search-bar { width: 100%; padding: 15px; margin-bottom: 20px; border-radius: 30px; border: 2px solid var(--leaf-green); font-size: 1rem; outline: none; }
     </style>
 </head>
 <body>
 
 <header>
     <h1>THE NIGHT HUNGER</h1>
-    <p>SVEC@KINGS | Pure South Indian Delights</p>
+    <p>SVEC@KINGS | Serving Authentic Flavors</p>
 </header>
 
 <div class="container">
     <div id="role-selection-screen">
-        <div class="hero-text">Authentic South Indian Tastes</div>
+        <div class="hero-text">Vanakkam! Taste the Tradition</div>
         
         <div class="food-showcase">
             <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=200&q=80" alt="Dosa" class="food-item-img">
             <img src="https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=200&q=80" alt="Idli" class="food-item-img">
-            <img src="data:image/jpeg;base64,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" alt="Biryani" class="food-item-img">
+            <img src="https://images.unsplash.com/photo-1563379091339-03b17af4a4af?auto=format&fit=crop&w=200&q=80" alt="Biryani" class="food-item-img">
         </div>
 
-        <h3>Welcome to Canteen Portal</h3>
+        <h3>Canteen Ordering Portal</h3>
+        <p style="color: #666; font-size: 0.9rem;">Freshly made Dosa, Idli & Meals available now.</p>
+        
         <button class="btn btn-buyer" onclick="showLogin('buyer')">I am a Buyer</button>
         <button class="btn btn-owner" onclick="showLogin('owner')">I am the Owner</button>
+        
+        <div style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px;">
+            <small style="color: var(--leaf-green); font-weight: bold;">🍃 Traditional South Style</small>
+        </div>
     </div>
 
     <div id="buyer-login" class="login-card buyer-card hidden">
@@ -151,7 +211,7 @@
         <div class="admin-section" style="background: var(--cream); border: 2px dashed var(--saffron);">
             <h3>📦 Parcel Settings</h3>
             <div style="display: flex; gap: 10px; align-items: center;">
-                <span>Charge/Pack: ₹</span>
+                <span>Charge per Pack: ₹</span>
                 <input type="number" id="parcel-charge-input" style="width: 100px; margin:0;" placeholder="10">
                 <button class="btn btn-owner" style="width: auto; margin:0;" onclick="updateParcelCharge()">Set Charge</button>
             </div>
@@ -163,6 +223,9 @@
                 <input type="number" id="new-food-price" placeholder="Price (₹)" style="flex: 1;">
                 <button class="btn btn-buyer" style="width: auto;" onclick="addNewItem()">Add Item</button>
             </div>
+        </div>
+        <div class="admin-section">
+            <h3>Inventory Management</h3>
             <table>
                 <thead><tr><th>Food Item</th><th>Price (₹)</th><th>Action</th></tr></thead>
                 <tbody id="admin-table-body"></tbody>
@@ -187,175 +250,10 @@
     <div style="font-size: 0.9rem;">Subtotal: ₹<span id="subtotal-price">0</span></div>
     <div style="font-size: 0.9rem;">Parcel: ₹<span id="parcel-total-price">0</span></div>
     <div style="font-size: 1.2rem; font-weight: bold; color: var(--chili-red);">Total: ₹<span id="final-total">0</span></div>
-    <button class="btn" style="background: #25D366; color: white; margin-top: 10px;" onclick="finalizeOrder()">Place Order & Get Bill</button>
+    <button class="btn" style="background: #25D366; color: white;" onclick="finalizeOrder()">Place Order & Get Bill</button>
 </div>
 
 <script>
-    
-    const firebaseConfig = {
-        apiKey: "AIzaSyB_FgpjqGI2OHp8u6KBwlBUamyqHS7yvDo",
-        authDomain: "desi-delights-de69a.firebaseapp.com",
-        databaseURL: "https://desi-delights-de69a-default-rtdb.firebaseio.com",
-        projectId: "desi-delights-de69a",
-        storageBucket: "desi-delights-de69a.firebasestorage.app",
-        messagingSenderId: "565398829820",
-        appId: "1:565398829820:web:2fd7226cefc1268c21b579"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    let menu = [], cart = [], globalParcelCharge = 0, currentUser = {};
-    const OWNER_PHONE = "6304438653", OWNER_PASS = "havi2196";
-
-    window.onload = function() {
-        const savedName = localStorage.getItem('savedName'), savedPhone = localStorage.getItem('savedPhone');
-        if(savedName) document.getElementById('buyer-name').value = savedName;
-        if(savedPhone) {
-            document.getElementById('buyer-phone').value = savedPhone;
-            document.getElementById('owner-id-phone').value = savedPhone;
-        }
-        if (Notification.permission !== "granted") Notification.requestPermission();
-    };
-
-    db.ref('settings/parcelCharge').on('value', (snap) => {
-        globalParcelCharge = snap.val() || 0;
-        document.getElementById('display-parcel-fee').innerText = globalParcelCharge;
-        document.getElementById('parcel-charge-input').value = globalParcelCharge;
-    });
-
-    db.ref('menu/').on('value', (snapshot) => {
-        const data = snapshot.val();
-        menu = [];
-        for (let key in data) menu.push({ id: key, ...data[key] });
-        renderMenu(menu);
-        if (currentUser.role === 'owner') renderAdminTable();
-    });
-
-    db.ref('orders/').on('value', (snapshot) => {
-        const data = snapshot.val();
-        const list = document.getElementById('incoming-orders-list');
-        if (!data) return;
-        let html = "";
-        let entries = Object.values(data).reverse().slice(0, 10);
-        entries.forEach(o => {
-            html += `
-                <div class="order-alert">
-                    <div style="display:flex; justify-content:space-between;">
-                        <strong>👤 ${o.name}</strong> 
-                        <span style="color:var(--cilantro); font-size:0.8rem;">${o.time}</span>
-                    </div>
-                    <div style="margin:5px 0; color:#555; font-size:0.9rem;">📦 <strong>Items:</strong> ${o.itemsSummary}</div>
-                    <div style="font-weight:bold; color:var(--chili-red);">Total: ₹${o.total}</div>
-                </div>`;
-        });
-        list.innerHTML = html;
-    });
-
-    function showLogin(role) {
-        document.getElementById('role-selection-screen').classList.add('hidden');
-        document.getElementById(role + '-login').classList.remove('hidden');
-    }
-
-    function goBack() {
-        document.querySelectorAll('.login-card, #role-selection-screen').forEach(el => el.classList.add('hidden'));
-        document.getElementById('role-selection-screen').classList.remove('hidden');
-    }
-
-    function processLogin(role) {
-        if(role === 'buyer') {
-            const name = document.getElementById('buyer-name').value, phone = document.getElementById('buyer-phone').value;
-            if(!name || !phone) return alert("Enter Name and Phone!");
-            localStorage.setItem('savedName', name); localStorage.setItem('savedPhone', phone);
-            currentUser = { name, phone, role: 'buyer' };
-            document.getElementById('buyer-login').classList.add('hidden');
-            document.getElementById('buyer-menu').classList.remove('hidden');
-            document.getElementById('cart-section').classList.remove('hidden');
-        } else {
-            const phone = document.getElementById('owner-id-phone').value, pass = document.getElementById('owner-pass').value;
-            if(phone === OWNER_PHONE && pass === OWNER_PASS) {
-                currentUser = { name: "Owner", phone, role: 'owner' };
-                document.getElementById('owner-login').classList.add('hidden');
-                document.getElementById('owner-dashboard').classList.remove('hidden');
-            } else alert("Invalid Access!");
-        }
-    }
-
-    function updateParcelCharge() {
-        const val = parseInt(document.getElementById('parcel-charge-input').value);
-        db.ref('settings/parcelCharge').set(val);
-        alert("Parcel Charge Updated!");
-    }
-
-    function addNewItem() {
-        const name = document.getElementById('new-food-name').value, price = parseFloat(document.getElementById('new-food-price').value);
-        if(name && price) {
-            db.ref('menu/').push({ name, price });
-            document.getElementById('new-food-name').value = ''; document.getElementById('new-food-price').value = '';
-        }
-    }
-
-    function deleteItem(id) { if(confirm("Delete item?")) db.ref('menu/' + id).remove(); }
-
-    function renderAdminTable() {
-        const tbody = document.getElementById('admin-table-body');
-        if(!tbody) return;
-        tbody.innerHTML = menu.map(item => `
-            <tr><td>${item.name}</td><td>₹${item.price}</td>
-            <td><button onclick="deleteItem('${item.id}')" class="btn-danger">Del</button></td></tr>`).join('');
-    }
-
-    function filterMenu() {
-        const q = document.getElementById('search-input').value.toLowerCase();
-        renderMenu(menu.filter(m => m.name.toLowerCase().includes(q)));
-    }
-
-    function renderMenu(data) {
-        const list = document.getElementById('food-list');
-        if(!list) return;
-        list.innerHTML = data.map(item => `
-            <div class="food-card">
-                <h3>${item.name}</h3>
-                <p class="price-tag">₹${item.price}</p>
-                <button class="btn btn-buyer" onclick="addToCart('${item.id}')">Add to Pack</button>
-            </div>`).join('');
-    }
-
-    function addToCart(id) {
-        const item = menu.find(m => m.id === id);
-        cart.push(item);
-        updateCartUI();
-    }
-
-    function updateCartUI() {
-        let subtotal = 0;
-        const cartDiv = document.getElementById('cart-items');
-        cartDiv.innerHTML = cart.map((item, idx) => {
-            subtotal += item.price;
-            return `<div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.85rem;">
-                <span>${item.name}</span>
-                <span>₹${item.price} <button onclick="removeFromCart(${idx})" style="color:red; border:none; background:none; cursor:pointer;">x</button></span>
-            </div>`;
-        }).join('');
-        const parcelTotal = cart.length * globalParcelCharge;
-        document.getElementById('subtotal-price').innerText = subtotal;
-        document.getElementById('parcel-total-price').innerText = parcelTotal;
-        document.getElementById('final-total').innerText = subtotal + parcelTotal;
-    }
-
-    function finalizeOrder() {
-        if(cart.length === 0) return alert("Cart is empty!");
-        const total = document.getElementById('final-total').innerText;
-        const summary = cart.map(i => i.name).join(", ");
-        db.ref('orders/').push({ name: currentUser.name, itemsSummary: summary, total: total, time: new Date().toLocaleTimeString() });
-        const billMsg = `*THE NIGHT HUNGER ORDER*\nCustomer: ${currentUser.name}\nItems: ${summary}\nTotal Bill: ₹${total}`;
-        window.open(`https://wa.me/91${currentUser.phone}?text=${encodeURIComponent(billMsg)}`, '_blank');
-        clearCart();
-    }
-
-    function removeFromCart(idx) { cart.splice(idx, 1); updateCartUI(); }
-    function clearCart() { cart = []; updateCartUI(); }
-    function logout() { location.reload(); }
 </script>
 </body>
 </html>
