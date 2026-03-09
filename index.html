@@ -306,7 +306,15 @@
 
     function removeFromCart(idx) { cart.splice(idx, 1); updateCartUI(); }
     function clearCart() { cart = []; updateCartUI(); }
-    function logout() { location.reload(); }
+    function logout() {
+    currentUser = {}; 
+    cart = [];
+    document.querySelectorAll('.container > div, #cart-section').forEach(el => {
+        el.classList.add('hidden');
+    });
+    document.getElementById('role-selection-screen').classList.remove('hidden');
+    
+}
 </script>
 </body>
 </html>
