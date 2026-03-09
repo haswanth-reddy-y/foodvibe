@@ -23,87 +23,32 @@
         header { background: linear-gradient(135deg, var(--saffron), var(--chili-red)); color: white; padding: 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
         .container { max-width: 1000px; margin: auto; padding: 20px; }
 
-        
-        .food-showcase {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .food-item-img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid var(--white);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-        }
-
-         
-        .food-item-img:hover {
-            transform: scale(1.15) rotate(5deg);
-            border-color: var(--turmeric);
-        }
-
-        .hero-text {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--saffron);
-            margin-bottom: 10px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
+        .food-showcase { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .food-item-img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid var(--white); box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; }
+        .food-item-img:hover { transform: scale(1.15) rotate(5deg); border-color: var(--turmeric); }
 
         #role-selection-screen, .login-card { max-width: 450px; margin: 20px auto; background: var(--white); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
         #role-selection-screen { border-top: 6px solid var(--turmeric); }
-        .buyer-card { border-top: 6px solid var(--cilantro); }
-        .owner-card { border-top: 6px solid var(--chili-red); }
 
         input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        
-        
-        .btn { 
-            width: 100%; 
-            padding: 12px; 
-            border: none; 
-            border-radius: 8px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            text-transform: uppercase; 
-            margin: 5px 0; 
-            
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
-        }
-
-        .btn:hover {
-            transform: scale(1.05);  
-            box-shadow: 0 8px 15px rgba(0,0,0,0.2);  
-        }
-
-        .btn:active {
-            transform: scale(0.98);  
-        }
-
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; text-transform: uppercase; margin: 5px 0; }
+        .btn:hover { transform: scale(1.03); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .btn-buyer { background: var(--cilantro); color: white; }
         .btn-owner { background: var(--saffron); color: white; }
-        .btn-back { background: #eee; color: #555; font-size: 0.8rem; }
-     
+        .btn-danger { background: var(--chili-red); color: white; padding: 5px 10px; font-size: 0.7rem; width: auto; }
+
         .admin-section { background: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .food-card { background: var(--white); border-radius: 15px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-left: 5px solid var(--turmeric); }
-        .price-tag { color: var(--chili-red); font-size: 1.2rem; font-weight: bold; }
-
+        .food-card { background: var(--white); border-radius: 15px; padding: 20px; border-left: 5px solid var(--turmeric); }
+        
         #cart-section { position: fixed; bottom: 20px; right: 20px; width: 320px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 -5px 25px rgba(0,0,0,0.2); border-top: 4px solid var(--cilantro); z-index: 100; }
         .hidden { display: none !important; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
 
-        .search-bar { width: 100%; padding: 15px; margin-bottom: 20px; border-radius: 30px; border: 2px solid var(--turmeric); font-size: 1rem; }
-        .order-alert { background: #fff; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 5px solid var(--cilantro); box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: left; }
+        .order-alert { background: #fff; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 5px solid var(--cilantro); box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: relative; }
+        .delete-order-btn { position: absolute; top: 10px; right: 10px; background: none; border: none; color: #ccc; cursor: pointer; font-size: 1.2rem; }
+        .delete-order-btn:hover { color: var(--chili-red); }
     </style>
 </head>
 <body>
@@ -115,65 +60,63 @@
 
 <div class="container">
     <div id="role-selection-screen">
-        <div class="hero-text">Authentic South Indian Tastes</div>
-        
         <div class="food-showcase">
-            <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=200&q=80" alt="Dosa" class="food-item-img">
-            <img src="https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=200&q=80" alt="Idli" class="food-item-img">
-            <img src="https://images.unsplash.com/photo-1563379091339-03b17af4a4af?auto=format&fit=crop&w=200&q=80" alt="Biryani" class="food-item-img">
+            <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=200&q=80" class="food-item-img">
+            <img src="https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=200&q=80" class="food-item-img">
+            <img src="https://www.google.com/imgres?q=biryani%20images&imgurl=https%3A%2F%2Fc.ndtvimg.com%2F2022-04%2Ffq5cs53_biryani-doubletree-by-hilton_625x300_12_April_22.jpg&imgrefurl=https%3A%2F%2Ffood.ndtv.com%2Frecipe-sindhi-biryani-957400&docid=dgk5nWjNFBAySM&tbnid=JA6_E-WQaUIWzM&vet=12ahUKEwiqkKD7ypOTAxXuTmwGHRxbE10QnPAOegQIQhAB..i&w=620&h=330&hcb=2&ved=2ahUKEwiqkKD7ypOTAxXuTmwGHRxbE10QnPAOegQIQhAB" class="food-item-img">
         </div>
-
-        <h3>Welcome to Canteen Portal</h3>
         <button class="btn btn-buyer" onclick="showLogin('buyer')">I am a Buyer</button>
         <button class="btn btn-owner" onclick="showLogin('owner')">I am the Owner</button>
     </div>
 
-    <div id="buyer-login" class="login-card buyer-card hidden">
+    <div id="buyer-login" class="login-card hidden">
         <h3>Buyer Login</h3>
         <input type="text" id="buyer-name" placeholder="Full Name">
         <input type="tel" id="buyer-phone" placeholder="WhatsApp Number">
         <button class="btn btn-buyer" onclick="processLogin('buyer')">Enter Canteen</button>
-        <button class="btn btn-back" onclick="goBack()">← Back</button>
+        <button class="btn" onclick="location.reload()">← Back</button>
     </div>
 
-    <div id="owner-login" class="login-card owner-card hidden">
+    <div id="owner-login" class="login-card hidden">
         <h3>Owner Secure Login</h3>
-        <input type="tel" id="owner-id-phone" placeholder="Registered Phone">
         <input type="password" id="owner-pass" placeholder="Management Password">
         <button class="btn btn-owner" onclick="processLogin('owner')">Access Dashboard</button>
-        <button class="btn btn-back" onclick="goBack()">← Back</button>
+        <button class="btn" onclick="location.reload()">← Back</button>
     </div>
 
     <div id="owner-dashboard" class="hidden">
         <div class="admin-section">
-            <h3>🔔 Detailed Order Notifications</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>🔔 Incoming Orders</h3>
+                <button class="btn btn-danger" onclick="clearAllOrders()">Clear All History</button>
+            </div>
             <div id="incoming-orders-list">Waiting for orders...</div>
         </div>
+
         <div class="admin-section" style="background: var(--cream); border: 2px dashed var(--saffron);">
             <h3>📦 Parcel Settings</h3>
             <div style="display: flex; gap: 10px; align-items: center;">
                 <span>Charge/Pack: ₹</span>
-                <input type="number" id="parcel-charge-input" style="width: 100px; margin:0;" placeholder="10">
-                <button class="btn btn-owner" style="width: auto; margin:0;" onclick="updateParcelCharge()">Set Charge</button>
+                <input type="number" id="parcel-charge-input" style="width: 80px; margin:0;">
+                <button class="btn btn-owner" style="width: auto;" onclick="updateParcelCharge()">Save</button>
             </div>
         </div>
+
         <div class="admin-section">
-            <h3>Add New Food Item</h3>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <input type="text" id="new-food-name" placeholder="Item Name" style="flex: 2;">
-                <input type="number" id="new-food-price" placeholder="Price (₹)" style="flex: 1;">
-                <button class="btn btn-buyer" style="width: auto;" onclick="addNewItem()">Add Item</button>
+            <h3>Menu & Inventory</h3>
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <input type="text" id="new-food-name" placeholder="Item Name">
+                <input type="number" id="new-food-price" placeholder="Price">
+                <button class="btn btn-buyer" style="width: auto;" onclick="addNewItem()">Add</button>
             </div>
             <table>
-                <thead><tr><th>Food Item</th><th>Price (₹)</th><th>Action</th></tr></thead>
                 <tbody id="admin-table-body"></tbody>
             </table>
-            <button class="btn btn-back" style="margin-top:20px" onclick="logout()">Logout</button>
+            <button class="btn" style="background:#555; color:white; margin-top:20px" onclick="location.reload()">Logout</button>
         </div>
     </div>
 
     <div id="buyer-menu" class="hidden">
-        <input type="text" class="search-bar" id="search-input" placeholder="🔍 Search menu..." onkeyup="filterMenu()">
         <div style="background: var(--turmeric); padding: 10px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold;">
             Note: Parcel Charge ₹<span id="display-parcel-fee">0</span> per item applies.
         </div>
@@ -185,14 +128,11 @@
     <h3>Your Bill</h3>
     <div id="cart-items" style="max-height: 150px; overflow-y: auto;"></div>
     <hr>
-    <div style="font-size: 0.9rem;">Subtotal: ₹<span id="subtotal-price">0</span></div>
-    <div style="font-size: 0.9rem;">Parcel: ₹<span id="parcel-total-price">0</span></div>
     <div style="font-size: 1.2rem; font-weight: bold; color: var(--chili-red);">Total: ₹<span id="final-total">0</span></div>
-    <button class="btn" style="background: #25D366; color: white; margin-top: 10px;" onclick="finalizeOrder()">Place Order & Get Bill</button>
+    <button class="btn" style="background: #25D366; color: white;" onclick="finalizeOrder()">Place Order & WhatsApp</button>
 </div>
 
 <script>
-    
     const firebaseConfig = {
         apiKey: "AIzaSyB_FgpjqGI2OHp8u6KBwlBUamyqHS7yvDo",
         authDomain: "desi-delights-de69a.firebaseapp.com",
@@ -205,49 +145,39 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-
     let menu = [], cart = [], globalParcelCharge = 0, currentUser = {};
-    const OWNER_PHONE = "6304438653", OWNER_PASS = "havi2196";
+    const OWNER_PASS = "havi2196";
 
-    window.onload = function() {
-        const savedName = localStorage.getItem('savedName'), savedPhone = localStorage.getItem('savedPhone');
-        if(savedName) document.getElementById('buyer-name').value = savedName;
-        if(savedPhone) {
-            document.getElementById('buyer-phone').value = savedPhone;
-            document.getElementById('owner-id-phone').value = savedPhone;
-        }
-        if (Notification.permission !== "granted") Notification.requestPermission();
-    };
-
-    db.ref('settings/parcelCharge').on('value', (snap) => {
+    
+    db.ref('settings/parcelCharge').on('value', snap => {
         globalParcelCharge = snap.val() || 0;
         document.getElementById('display-parcel-fee').innerText = globalParcelCharge;
-        document.getElementById('parcel-charge-input').value = globalParcelCharge;
     });
 
-    db.ref('menu/').on('value', (snapshot) => {
-        const data = snapshot.val();
+     
+    db.ref('menu/').on('value', snap => {
         menu = [];
-        for (let key in data) menu.push({ id: key, ...data[key] });
-        renderMenu(menu);
-        if (currentUser.role === 'owner') renderAdminTable();
+        const data = snap.val();
+        for(let id in data) menu.push({ id, ...data[id] });
+        renderMenu();
+        renderAdminTable();
     });
 
-    db.ref('orders/').on('value', (snapshot) => {
-        const data = snapshot.val();
+    
+    db.ref('orders/').on('value', snap => {
+        const data = snap.val();
         const list = document.getElementById('incoming-orders-list');
-        if (!data) return;
+        if(!data) { list.innerHTML = "No orders."; return; }
         let html = "";
-        let entries = Object.values(data).reverse().slice(0, 10);
-        entries.forEach(o => {
+        
+        Object.keys(data).reverse().forEach(key => {
+            const o = data[key];
             html += `
                 <div class="order-alert">
-                    <div style="display:flex; justify-content:space-between;">
-                        <strong>👤 ${o.name}</strong> 
-                        <span style="color:var(--cilantro); font-size:0.8rem;">${o.time}</span>
-                    </div>
-                    <div style="margin:5px 0; color:#555; font-size:0.9rem;">📦 <strong>Items:</strong> ${o.itemsSummary}</div>
-                    <div style="font-weight:bold; color:var(--chili-red);">Total: ₹${o.total}</div>
+                    <button class="delete-order-btn" onclick="deleteOrder('${key}')">×</button>
+                    <strong>👤 ${o.name}</strong> <small>${o.time}</small><br>
+                    <div style="font-size:0.85rem; color:#555; margin:5px 0;">Items: ${o.itemsSummary}</div>
+                    <strong>Total: ₹${o.total}</strong>
                 </div>`;
         });
         list.innerHTML = html;
@@ -258,68 +188,67 @@
         document.getElementById(role + '-login').classList.remove('hidden');
     }
 
-    function goBack() {
-        document.querySelectorAll('.login-card, #role-selection-screen').forEach(el => el.classList.add('hidden'));
-        document.getElementById('role-selection-screen').classList.remove('hidden');
-    }
-
     function processLogin(role) {
         if(role === 'buyer') {
-            const name = document.getElementById('buyer-name').value, phone = document.getElementById('buyer-phone').value;
-            if(!name || !phone) return alert("Enter Name and Phone!");
-            localStorage.setItem('savedName', name); localStorage.setItem('savedPhone', phone);
+            const name = document.getElementById('buyer-name').value;
+            const phone = document.getElementById('buyer-phone').value;
+            if(!name || !phone) return alert("Fill details!");
             currentUser = { name, phone, role: 'buyer' };
             document.getElementById('buyer-login').classList.add('hidden');
             document.getElementById('buyer-menu').classList.remove('hidden');
             document.getElementById('cart-section').classList.remove('hidden');
         } else {
-            const phone = document.getElementById('owner-id-phone').value, pass = document.getElementById('owner-pass').value;
-            if(phone === OWNER_PHONE && pass === OWNER_PASS) {
-                currentUser = { name: "Owner", phone, role: 'owner' };
+            if(document.getElementById('owner-pass').value === OWNER_PASS) {
+                currentUser = { role: 'owner' };
                 document.getElementById('owner-login').classList.add('hidden');
                 document.getElementById('owner-dashboard').classList.remove('hidden');
-            } else alert("Invalid Access!");
+            } else alert("Wrong Password!");
+        }
+    }
+
+    function deleteOrder(orderId) {
+        if(confirm("Delete this notification?")) {
+            db.ref('orders/' + orderId).remove();
+        }
+    }
+
+    function clearAllOrders() {
+        if(confirm("Wipe all order history? This cannot be undone.")) {
+            db.ref('orders').remove();
         }
     }
 
     function updateParcelCharge() {
         const val = parseInt(document.getElementById('parcel-charge-input').value);
         db.ref('settings/parcelCharge').set(val);
-        alert("Parcel Charge Updated!");
     }
 
-    function addNewItem() {
-        const name = document.getElementById('new-food-name').value, price = parseFloat(document.getElementById('new-food-price').value);
-        if(name && price) {
-            db.ref('menu/').push({ name, price });
-            document.getElementById('new-food-name').value = ''; document.getElementById('new-food-price').value = '';
-        }
+    function finalizeOrder() {
+        if(cart.length === 0) return;
+        const total = document.getElementById('final-total').innerText;
+        const summary = cart.map(i => i.name).join(", ");
+        db.ref('orders/').push({
+            name: currentUser.name,
+            itemsSummary: summary,
+            total: total,
+            time: new Date().toLocaleTimeString()
+        });
+        window.open(`https://wa.me/91${currentUser.phone}?text=New Order: ${summary} Total: ₹${total}`, '_blank');
+        cart = []; updateCartUI();
     }
 
-    function deleteItem(id) { if(confirm("Delete item?")) db.ref('menu/' + id).remove(); }
+    function renderMenu() {
+        document.getElementById('food-list').innerHTML = menu.map(i => `
+            <div class="food-card">
+                <h3>${i.name}</h3><p>₹${i.price}</p>
+                <button class="btn btn-buyer" onclick="addToCart('${i.id}')">Add to Pack</button>
+            </div>`).join('');
+    }
 
     function renderAdminTable() {
-        const tbody = document.getElementById('admin-table-body');
-        if(!tbody) return;
-        tbody.innerHTML = menu.map(item => `
-            <tr><td>${item.name}</td><td>₹${item.price}</td>
-            <td><button onclick="deleteItem('${item.id}')" class="btn-danger">Del</button></td></tr>`).join('');
-    }
-
-    function filterMenu() {
-        const q = document.getElementById('search-input').value.toLowerCase();
-        renderMenu(menu.filter(m => m.name.toLowerCase().includes(q)));
-    }
-
-    function renderMenu(data) {
-        const list = document.getElementById('food-list');
-        if(!list) return;
-        list.innerHTML = data.map(item => `
-            <div class="food-card">
-                <h3>${item.name}</h3>
-                <p class="price-tag">₹${item.price}</p>
-                <button class="btn btn-buyer" onclick="addToCart('${item.id}')">Add to Pack</button>
-            </div>`).join('');
+        document.getElementById('admin-table-body').innerHTML = menu.map(i => `
+            <tr><td>${i.name}</td><td>₹${i.price}</td>
+            <td><button onclick="db.ref('menu/${i.id}').remove()" class="btn btn-danger">Del</button></td></tr>`).join('');
     }
 
     function addToCart(id) {
@@ -329,34 +258,19 @@
     }
 
     function updateCartUI() {
-        let subtotal = 0;
-        const cartDiv = document.getElementById('cart-items');
-        cartDiv.innerHTML = cart.map((item, idx) => {
-            subtotal += item.price;
-            return `<div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.85rem;">
-                <span>${item.name}</span>
-                <span>₹${item.price} <button onclick="removeFromCart(${idx})" style="color:red; border:none; background:none; cursor:pointer;">x</button></span>
-            </div>`;
+        let sub = 0;
+        document.getElementById('cart-items').innerHTML = cart.map(i => {
+            sub += i.price;
+            return `<div>${i.name} - ₹${i.price}</div>`;
         }).join('');
-        const parcelTotal = cart.length * globalParcelCharge;
-        document.getElementById('subtotal-price').innerText = subtotal;
-        document.getElementById('parcel-total-price').innerText = parcelTotal;
-        document.getElementById('final-total').innerText = subtotal + parcelTotal;
+        document.getElementById('final-total').innerText = sub + (cart.length * globalParcelCharge);
     }
 
-    function finalizeOrder() {
-        if(cart.length === 0) return alert("Cart is empty!");
-        const total = document.getElementById('final-total').innerText;
-        const summary = cart.map(i => i.name).join(", ");
-        db.ref('orders/').push({ name: currentUser.name, itemsSummary: summary, total: total, time: new Date().toLocaleTimeString() });
-        const billMsg = `*THE NIGHT HUNGER ORDER*\nCustomer: ${currentUser.name}\nItems: ${summary}\nTotal Bill: ₹${total}`;
-        window.open(`https://wa.me/91${currentUser.phone}?text=${encodeURIComponent(billMsg)}`, '_blank');
-        clearCart();
+    function addNewItem() {
+        const name = document.getElementById('new-food-name').value;
+        const price = parseInt(document.getElementById('new-food-price').value);
+        if(name && price) db.ref('menu/').push({ name, price });
     }
-
-    function removeFromCart(idx) { cart.splice(idx, 1); updateCartUI(); }
-    function clearCart() { cart = []; updateCartUI(); }
-    function logout() { location.reload(); }
 </script>
 </body>
 </html>
