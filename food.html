@@ -19,7 +19,6 @@
         header { background: linear-gradient(135deg, var(--saffron), var(--chili-red)); color: white; padding: 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
         .container { max-width: 1000px; margin: auto; padding: 20px; }
  
-        /* Login Section Enhancement */
         #login-section { max-width: 450px; margin: 50px auto; background: var(--white); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 6px solid var(--saffron); text-align: center; }
         .role-selection { display: flex; gap: 10px; margin-top: 15px; }
         
@@ -31,7 +30,6 @@
         .btn-primary { background: var(--cilantro); color: white; margin-top: 10px; }
         .btn-danger { background: var(--chili-red); color: white; padding: 5px 10px; font-size: 0.7rem; border-radius: 5px; cursor: pointer; border: none; }
         
-        /* Dashboard & Menu */
         .admin-section { background: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
         .food-card { background: var(--white); border-radius: 15px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-left: 5px solid var(--turmeric); }
@@ -42,6 +40,10 @@
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
 
         .search-bar { width: 100%; padding: 15px; margin-bottom: 20px; border-radius: 30px; border: 2px solid var(--turmeric); font-size: 1rem; }
+        
+      
+        .order-alert { background: #e8f5e9; padding: 10px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid var(--cilantro); animation: slideIn 0.5s ease; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
     </style>
 </head>
 <body>
@@ -69,6 +71,11 @@
     </div>
 
     <div id="owner-dashboard" class="hidden">
+        <div class="admin-section" id="order-notifications-area">
+            <h3>🔔 Recent Incoming Orders</h3>
+            <div id="incoming-orders-list"><p style="color: #999;">No active orders yet...</p></div>
+        </div>
+
         <div class="admin-section">
             <h3>Add New Food Item</h3>
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
@@ -119,10 +126,11 @@
         <div>Parcel: ₹<span id="total-parcel">0</span></div>
         <div style="font-size: 1.2rem; font-weight: bold; color: var(--chili-red);">Total: ₹<span id="final-total">0</span></div>
     </div>
-    <button class="btn" style="background: #25D366; color: white; margin-top: 10px;" onclick="sendToWhatsApp()">Order via WhatsApp</button>
+    <button class="btn" style="background: #25D366; color: white; margin-top: 10px;" onclick="finalizeOrder()">Place Order & Get Bill</button>
 </div>
 
 <script>
+   
     let menu = [
         { id: 1, name: "Paneer Butter Masala", price: 180 },
         { id: 2, name: "Chicken Biryani", price: 250 },
@@ -136,7 +144,11 @@
     const OWNER_PHONE = "6304438653"; 
     const OWNER_PASS = "havi2196";
 
-    // 1. Separate Login Logic
+  
+    if (Notification.permission !== "granted") {
+        Notification.requestPermission();
+    }
+
     function handleRole(role) {
         const name = document.getElementById('login-name').value;
         const phone = document.getElementById('login-phone').value;
@@ -167,6 +179,7 @@
         document.getElementById('login-section').classList.add('hidden');
         document.getElementById('owner-dashboard').classList.remove('hidden');
         renderAdminTable();
+        loadStoredOrders();
     }
 
     function showBuyerView() {
@@ -177,7 +190,58 @@
         renderMenu(menu);
     }
 
-    // 2. Owner Functions
+  
+    function notifyOwnerOfOrder(buyerName, totalAmount) {
+       
+        if (Notification.permission === "granted") {
+            new Notification("New Order Received! 🍛", {
+                body: `${buyerName} has ordered food worth ₹${totalAmount}`,
+                icon: "https://cdn-icons-png.flaticon.com/512/1037/1037762.png"
+            });
+        }
+
+       
+        let orders = JSON.parse(localStorage.getItem('desiOrders') || '[]');
+        orders.unshift({ name: buyerName, amount: totalAmount, time: new Date().toLocaleTimeString() });
+        localStorage.setItem('desiOrders', JSON.stringify(orders));
+    }
+
+    function loadStoredOrders() {
+        const list = document.getElementById('incoming-orders-list');
+        let orders = JSON.parse(localStorage.getItem('desiOrders') || '[]');
+        if (orders.length === 0) return;
+        
+        list.innerHTML = orders.slice(0, 5).map(o => `
+            <div class="order-alert">
+                <strong>${o.name}</strong> placed an order for <strong>₹${o.amount}</strong> at ${o.time}
+            </div>
+        `).join('');
+    }
+
+    
+    function finalizeOrder() {
+        if(cart.length === 0) return alert("Cart is empty!");
+        const total = document.getElementById('final-total').innerText;
+        
+     
+        notifyOwnerOfOrder(currentUser.name, total);
+        
+        
+        sendToWhatsApp(total);
+    }
+
+    function sendToWhatsApp(total) {
+        let bill = `*DESI DELIGHTS - NEW ORDER*\n--------------------------\n`;
+        bill += `Customer: ${currentUser.name}\n`;
+        cart.forEach(item => bill += `• ${item.name}: ₹${item.price}\n`);
+        bill += `--------------------------\n`;
+        bill += `Parcel Charges: ₹${document.getElementById('total-parcel').innerText}\n`;
+        bill += `*TOTAL BILL: ₹${total}*\n`;
+        bill += `--------------------------\nOwner notified!`;
+        
+        window.open(`https://wa.me/91${currentUser.phone}?text=${encodeURIComponent(bill)}`, '_blank');
+    }
+
     function addNewItem() {
         const name = document.getElementById('new-food-name').value;
         const price = parseFloat(document.getElementById('new-food-price').value);
@@ -218,7 +282,6 @@
         renderAdminTable();
     }
 
-    // 3. Buyer & Search Functions
     function filterMenu() {
         const query = document.getElementById('search-input').value.toLowerCase();
         const filtered = menu.filter(item => item.name.toLowerCase().includes(query));
@@ -265,18 +328,6 @@
     }
 
     function clearCart() { cart = []; updateCartUI(); }
-
-    function sendToWhatsApp() {
-        if(cart.length === 0) return alert("Cart is empty!");
-        let bill = `*DESI DELIGHTS - ORDER BILL*\n--------------------------\n`;
-        bill += `Customer: ${currentUser.name}\n`;
-        cart.forEach(item => bill += `• ${item.name}: ₹${item.price}\n`);
-        bill += `--------------------------\n`;
-        bill += `Parcel Charges: ₹${document.getElementById('total-parcel').innerText}\n`;
-        bill += `*Total Amount: ₹${document.getElementById('final-total').innerText}*\n`;
-        window.open(`https://wa.me/91${currentUser.phone}?text=${encodeURIComponent(bill)}`, '_blank');
-    }
-
     function logout() { location.reload(); }
 </script>
 </body>
