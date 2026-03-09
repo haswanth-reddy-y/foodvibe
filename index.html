@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -23,7 +23,6 @@
         header { background: linear-gradient(135deg, var(--saffron), var(--chili-red)); color: white; padding: 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
         .container { max-width: 1000px; margin: auto; padding: 20px; }
  
-        /* Role & Login Cards */
         #role-selection-screen, .login-card { max-width: 450px; margin: 50px auto; background: var(--white); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
         #role-selection-screen { border-top: 6px solid var(--turmeric); }
         .buyer-card { border-top: 6px solid var(--cilantro); }
@@ -35,7 +34,6 @@
         .btn-owner { background: var(--saffron); color: white; }
         .btn-back { background: #eee; color: #555; font-size: 0.8rem; }
      
-        /* Dashboard & Menu */
         .admin-section { background: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
         .food-card { background: var(--white); border-radius: 15px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-left: 5px solid var(--turmeric); }
@@ -47,7 +45,7 @@
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
 
         .search-bar { width: 100%; padding: 15px; margin-bottom: 20px; border-radius: 30px; border: 2px solid var(--turmeric); font-size: 1rem; }
-        .order-alert { background: #e8f5e9; padding: 10px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid var(--cilantro); animation: slideIn 0.5s ease; }
+        .order-alert { background: #fff; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 5px solid var(--cilantro); box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: left; }
         
         @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
     </style>
@@ -62,7 +60,6 @@
 <div class="container">
     <div id="role-selection-screen">
         <h3>Welcome to Canteen Portal</h3>
-        <p>Please select your role to continue</p>
         <button class="btn btn-buyer" onclick="showLogin('buyer')">I am a Buyer</button>
         <button class="btn btn-owner" onclick="showLogin('owner')">I am the Owner</button>
     </div>
@@ -85,9 +82,20 @@
 
     <div id="owner-dashboard" class="hidden">
         <div class="admin-section">
-            <h3>🔔 Incoming Orders (Cloud)</h3>
+            <h3>🔔 Detailed Order Notifications</h3>
             <div id="incoming-orders-list">Waiting for orders...</div>
         </div>
+
+        <div class="admin-section" style="background: var(--cream); border: 2px dashed var(--saffron);">
+            <h3>📦 Parcel Settings</h3>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <span>Charge per Pack: ₹</span>
+                <input type="number" id="parcel-charge-input" style="width: 100px; margin:0;" placeholder="10">
+                <button class="btn btn-owner" style="width: auto; margin:0;" onclick="updateParcelCharge()">Set Charge</button>
+            </div>
+            <p style="font-size: 0.8rem; margin-top: 5px; color: #666;">*This charge applies to every individual item in the cart.</p>
+        </div>
+
         <div class="admin-section">
             <h3>Add New Food Item</h3>
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
@@ -96,59 +104,55 @@
                 <button class="btn btn-buyer" style="width: auto;" onclick="addNewItem()">Add Item</button>
             </div>
         </div>
+
         <div class="admin-section">
-            <h3>Current Inventory</h3>
+            <h3>Inventory Management</h3>
             <table>
                 <thead><tr><th>Food Item</th><th>Price (₹)</th><th>Action</th></tr></thead>
                 <tbody id="admin-table-body"></tbody>
             </table>
-            <button class="btn btn-back" style="margin-top:20px" onclick="logout()">Logout / Shift Role</button>
+            <button class="btn btn-back" style="margin-top:20px" onclick="logout()">Logout</button>
         </div>
     </div>
 
     <div id="buyer-menu" class="hidden">
-        <input type="text" class="search-bar" id="search-input" placeholder="🔍 Search menu (Biryani, Dosa...)" onkeyup="filterMenu()">
+        <input type="text" class="search-bar" id="search-input" placeholder="🔍 Search menu..." onkeyup="filterMenu()">
+        <div style="background: var(--turmeric); padding: 10px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold;">
+            Note: Parcel Charge ₹<span id="display-parcel-fee">0</span> per item applies.
+        </div>
         <div class="menu-grid" id="food-list"></div>
     </div>
 </div>
 
 <div id="cart-section" class="hidden">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h3 style="margin:0;">Your Bill</h3>
-        <button onclick="clearCart()" style="border:none; background:none; color:red; cursor:pointer; font-size:0.8rem;">Clear All</button>
-    </div>
-    <div id="cart-items" style="max-height: 150px; overflow-y: auto; margin: 10px 0;"></div>
+    <h3>Your Bill</h3>
+    <div id="cart-items" style="max-height: 150px; overflow-y: auto;"></div>
     <hr>
-    <div style="font-size: 1.1rem; font-weight: bold; color: var(--chili-red);">Total: ₹<span id="final-total">0</span></div>
-    <button class="btn" style="background: #25D366; color: white; margin-top: 10px;" onclick="finalizeOrder()">Place Order & Get Bill</button>
-    <button class="btn btn-back" onclick="logout()">Logout</button>
+    <div style="font-size: 0.9rem;">Items Subtotal: ₹<span id="subtotal-price">0</span></div>
+    <div style="font-size: 0.9rem;">Parcel Charges: ₹<span id="parcel-total-price">0</span></div>
+    <div style="font-size: 1.2rem; font-weight: bold; color: var(--chili-red);">Total: ₹<span id="final-total">0</span></div>
+    <button class="btn" style="background: #25D366; color: white;" onclick="finalizeOrder()">Place Order & Get Bill</button>
 </div>
 
 <script>
- 
     const firebaseConfig = {
-  apiKey: "AIzaSyB_FgpjqGI2OHp8u6KBwlBUamyqHS7yvDo",
-  authDomain: "desi-delights-de69a.firebaseapp.com",
-  databaseURL: "https://desi-delights-de69a-default-rtdb.firebaseio.com",
-  projectId: "desi-delights-de69a",
-  storageBucket: "desi-delights-de69a.firebasestorage.app",
-  messagingSenderId: "565398829820",
-  appId: "1:565398829820:web:2fd7226cefc1268c21b579",
-  measurementId: "G-03KZB30720"
-};
- 
+        apiKey: "AIzaSyB_FgpjqGI2OHp8u6KBwlBUamyqHS7yvDo",
+        authDomain: "desi-delights-de69a.firebaseapp.com",
+        databaseURL: "https://desi-delights-de69a-default-rtdb.firebaseio.com",
+        projectId: "desi-delights-de69a",
+        storageBucket: "desi-delights-de69a.firebasestorage.app",
+        messagingSenderId: "565398829820",
+        appId: "1:565398829820:web:2fd7226cefc1268c21b579"
+    };
+
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    let menu = [];
-    let cart = [];
-    let currentUser = {};
-    const OWNER_PHONE = "6304438653"; 
-    const OWNER_PASS = "havi2196";
- 
+    let menu = [], cart = [], globalParcelCharge = 0, currentUser = {};
+    const OWNER_PHONE = "6304438653", OWNER_PASS = "havi2196";
+
     window.onload = function() {
-        const savedName = localStorage.getItem('savedName');
-        const savedPhone = localStorage.getItem('savedPhone');
+        const savedName = localStorage.getItem('savedName'), savedPhone = localStorage.getItem('savedPhone');
         if(savedName) document.getElementById('buyer-name').value = savedName;
         if(savedPhone) {
             document.getElementById('buyer-phone').value = savedPhone;
@@ -157,34 +161,46 @@
         if (Notification.permission !== "granted") Notification.requestPermission();
     };
 
-    
+   
+    db.ref('settings/parcelCharge').on('value', (snap) => {
+        globalParcelCharge = snap.val() || 0;
+        document.getElementById('display-parcel-fee').innerText = globalParcelCharge;
+        document.getElementById('parcel-charge-input').value = globalParcelCharge;
+    });
+
+   
     db.ref('menu/').on('value', (snapshot) => {
         const data = snapshot.val();
         menu = [];
-        for (let key in data) {
-            menu.push({ id: key, ...data[key] });
-        }
+        for (let key in data) menu.push({ id: key, ...data[key] });
         renderMenu(menu);
         if (currentUser.role === 'owner') renderAdminTable();
     });
- 
+
+   
     db.ref('orders/').on('value', (snapshot) => {
         const data = snapshot.val();
         const list = document.getElementById('incoming-orders-list');
         if (!data) return;
-        
         let html = "";
-        let entries = Object.values(data).reverse().slice(0, 5);
+        let entries = Object.values(data).reverse().slice(0, 10);
         entries.forEach(o => {
-            html += `<div class="order-alert"><strong>${o.name}</strong> ordered worth <strong>₹${o.total}</strong> at ${o.time}</div>`;
+            html += `
+                <div class="order-alert">
+                    <div style="display:flex; justify-content:space-between;">
+                        <strong>👤 ${o.name}</strong> 
+                        <span style="color:var(--cilantro); font-size:0.8rem;">${o.time}</span>
+                    </div>
+                    <div style="margin:5px 0; color:#555; font-size:0.9rem;">📦 <strong>Items:</strong> ${o.itemsSummary}</div>
+                    <div style="font-weight:bold; color:var(--chili-red);">Total: ₹${o.total}</div>
+                </div>`;
         });
         list.innerHTML = html;
-         
         if(currentUser.role === 'owner' && entries.length > 0) {
-            new Notification("New Order Received!", { body: `${entries[0].name}: ₹${entries[0].total}` });
+            new Notification("New Order!", { body: `${entries[0].name} bought ${entries[0].itemsSummary}` });
         }
     });
- 
+
     function showLogin(role) {
         document.getElementById('role-selection-screen').classList.add('hidden');
         document.getElementById(role + '-login').classList.remove('hidden');
@@ -197,62 +213,50 @@
 
     function processLogin(role) {
         if(role === 'buyer') {
-            const name = document.getElementById('buyer-name').value;
-            const phone = document.getElementById('buyer-phone').value;
-            if(!name || !phone) return alert("Please enter Name and Phone!");
-            
-            localStorage.setItem('savedName', name);
-            localStorage.setItem('savedPhone', phone);
-            
+            const name = document.getElementById('buyer-name').value, phone = document.getElementById('buyer-phone').value;
+            if(!name || !phone) return alert("Enter Name and Phone!");
+            localStorage.setItem('savedName', name); localStorage.setItem('savedPhone', phone);
             currentUser = { name, phone, role: 'buyer' };
             document.getElementById('buyer-login').classList.add('hidden');
             document.getElementById('buyer-menu').classList.remove('hidden');
             document.getElementById('cart-section').classList.remove('hidden');
         } else {
-            const phone = document.getElementById('owner-id-phone').value;
-            const pass = document.getElementById('owner-pass').value;
+            const phone = document.getElementById('owner-id-phone').value, pass = document.getElementById('owner-pass').value;
             if(phone === OWNER_PHONE && pass === OWNER_PASS) {
                 currentUser = { name: "Owner", phone, role: 'owner' };
                 document.getElementById('owner-login').classList.add('hidden');
                 document.getElementById('owner-dashboard').classList.remove('hidden');
-            } else {
-                alert("Incorrect Owner Credentials!");
-            }
-        }
-    }
- 
-    function addNewItem() {
-        const name = document.getElementById('new-food-name').value;
-        const price = parseFloat(document.getElementById('new-food-price').value);
-        if(name && price) {
-            db.ref('menu/').push({ name, price });
-            document.getElementById('new-food-name').value = '';
-            document.getElementById('new-food-price').value = '';
+            } else alert("Invalid Access!");
         }
     }
 
-    function deleteItem(id) {
-        if(confirm("Delete this item from Cloud?")) {
-            db.ref('menu/' + id).remove();
+    function updateParcelCharge() {
+        const val = parseInt(document.getElementById('parcel-charge-input').value);
+        db.ref('settings/parcelCharge').set(val);
+        alert("Parcel Charge Updated!");
+    }
+
+    function addNewItem() {
+        const name = document.getElementById('new-food-name').value, price = parseFloat(document.getElementById('new-food-price').value);
+        if(name && price) {
+            db.ref('menu/').push({ name, price });
+            document.getElementById('new-food-name').value = ''; document.getElementById('new-food-price').value = '';
         }
     }
+
+    function deleteItem(id) { if(confirm("Delete item?")) db.ref('menu/' + id).remove(); }
 
     function renderAdminTable() {
         const tbody = document.getElementById('admin-table-body');
         if(!tbody) return;
-        tbody.innerHTML = menu.map((item) => `
-            <tr>
-                <td>${item.name}</td>
-                <td>₹${item.price}</td>
-                <td><button onclick="deleteItem('${item.id}')" class="btn-danger">Del</button></td>
-            </tr>
-        `).join('');
+        tbody.innerHTML = menu.map(item => `
+            <tr><td>${item.name}</td><td>₹${item.price}</td>
+            <td><button onclick="deleteItem('${item.id}')" class="btn-danger">Del</button></td></tr>`).join('');
     }
- 
+
     function filterMenu() {
         const q = document.getElementById('search-input').value.toLowerCase();
-        const filtered = menu.filter(m => m.name.toLowerCase().includes(q));
-        renderMenu(filtered);
+        renderMenu(menu.filter(m => m.name.toLowerCase().includes(q)));
     }
 
     function renderMenu(data) {
@@ -262,9 +266,8 @@
             <div class="food-card">
                 <h3>${item.name}</h3>
                 <p class="price-tag">₹${item.price}</p>
-                <button class="btn btn-buyer" onclick="addToCart('${item.id}')">Add to Cart</button>
-            </div>
-        `).join('');
+                <button class="btn btn-buyer" onclick="addToCart('${item.id}')">Add to Pack</button>
+            </div>`).join('');
     }
 
     function addToCart(id) {
@@ -274,47 +277,43 @@
     }
 
     function updateCartUI() {
-        let total = 0;
+        let subtotal = 0;
         const cartDiv = document.getElementById('cart-items');
         cartDiv.innerHTML = cart.map((item, idx) => {
-            total += item.price;
+            subtotal += item.price;
             return `<div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.85rem;">
                 <span>${item.name}</span>
                 <span>₹${item.price} <button onclick="removeFromCart(${idx})" style="color:red; border:none; background:none; cursor:pointer;">x</button></span>
             </div>`;
         }).join('');
-        document.getElementById('final-total').innerText = total;
+        const parcelTotal = cart.length * globalParcelCharge;
+        document.getElementById('subtotal-price').innerText = subtotal;
+        document.getElementById('parcel-total-price').innerText = parcelTotal;
+        document.getElementById('final-total').innerText = subtotal + parcelTotal;
     }
 
     function finalizeOrder() {
         if(cart.length === 0) return alert("Cart is empty!");
         const total = document.getElementById('final-total').innerText;
         
-      
-        
+         
+        const summary = cart.map(i => i.name).join(", ");
+
         db.ref('orders/').push({
             name: currentUser.name,
+            itemsSummary: summary,
             total: total,
             time: new Date().toLocaleTimeString()
         });
- 
-        let billMsg = `*DESI DELIGHTS ORDER*\nCustomer: ${currentUser.name}\nTotal: ₹${total}\nThank you!`;
+
+        const billMsg = `*DESI DELIGHTS ORDER*\nCustomer: ${currentUser.name}\nItems: ${summary}\nTotal Bill: ₹${total}\nThank you!`;
         window.open(`https://wa.me/91${currentUser.phone}?text=${encodeURIComponent(billMsg)}`, '_blank');
-        
         clearCart();
     }
 
     function removeFromCart(idx) { cart.splice(idx, 1); updateCartUI(); }
     function clearCart() { cart = []; updateCartUI(); }
-    function logout() {
-    currentUser = {}; 
-    cart = [];
-    document.querySelectorAll('.container > div, #cart-section').forEach(el => {
-        el.classList.add('hidden');
-    });
-    document.getElementById('role-selection-screen').classList.remove('hidden');
-    
-}
+    function logout() { location.reload(); }
 </script>
 </body>
 </html>
